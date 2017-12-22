@@ -1,6 +1,6 @@
 <h2 class='text-center'>Sign up</h2>
 <div class='row'>
-  <div class=col-md-12>
+  <div class='col-md-12'>
     
     <%= form_for(resource, as: resource_name, :html => {class: "form-horizontal", role: "form"},
         url: registration_path(resource_name)) do |f| %>
@@ -19,7 +19,6 @@
         <div class="control-label col-md-3">
           <%= f.label :password %>
         </div>
-        
         <div class="col-md-9">
           <%= f.password_field :password, class: 'form-control', autocomplete: "off" %>
           <% if @minimum_password_length %>
