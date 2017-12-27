@@ -45,5 +45,4 @@ RSpec.feature "Showing an Article" do
     expect(page).to have_link("Edit Article")
     expect(page).to have_link("Delete Article")
   end
-  
 end
