@@ -1,3 +1,5 @@
+require 'pry'
+
 class ArticlesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :set_article, only: [:show, :edit, :update, :destroy]
@@ -34,12 +36,12 @@ class ArticlesController < ApplicationController
   
   def update
     unless @article.user == current_user
-      flash[:danger] = "You can only edit your own articles."
+      flash[:alert] = "You can only edit your own articles."
       redirect_to root_path
-    else
+    else  
       if @article.update(article_params)
         flash[:success] = "Article has been updated"
-        redirect_to @article 
+        redirect_to @article
       else
         flash.now[:danger] = "Article has not been updated"
         render :edit
@@ -55,9 +57,6 @@ class ArticlesController < ApplicationController
       @article.destroy
       flash[:success] = "The article has been deleted."
       redirect_to articles_path
-    else
-      flash.now[:alert] = "You need to sign in or sign up before continuing."
-      redirect_to user_session_path
     end
   end
   

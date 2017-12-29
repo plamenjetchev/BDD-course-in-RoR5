@@ -64,17 +64,46 @@ RSpec.describe "Articles", type: :request do
     end
   end
   
-  describe 'DELETE /articles/:id' do
+  describe 'PUT /articles/:id' do
     context 'with user not signed in' do
-      before { delete "/articles/#{@article.id}" }
-      
-      it 'redirects to sign in page' do
+      before { put "/articles/#{@article.id}",
+              params: { article: {title: "New Title", body: "New body"} } }
+      it "redirects to the signin page" do
         expect(response.status).to eq 302
         flash_message = "You need to sign in or sign up before continuing."
         expect(flash[:alert]).to eq flash_message
       end
     end
+    context 'with user signed in who doesn\'t own the article' do
+      before do
+        login_as(@fred)
+        put "/articles/#{@article.id}",
+              params: { article: {title: "New Title", body: "New Body"} }
+      end
+      it "redirects to the home page" do
+        expect(response.status).to eq 302
+        flash_message = "You can only edit your own articles."
+        expect(flash[:alert]).to eq flash_message
+      end
+    end
     
+    context "with user signed in and who owns the article" do
+      before { login_as(@john) }
+      it "successfully updates the article" do
+        put "/articles/#{@article.id}", 
+                params: { article: {title: "New Title", body: "New Body"} }
+          expect(response.status).to eq 302
+        end
+        it "unsuccessfully updates the article" do
+          put "/articles/#{@article.id}", 
+                params: { article: {title: "", body: ""} }
+          expect(flash[:danger]).to eq("Article has not been updated")
+          expect(response.status).to eq 200
+        end
+      end
+    end
+  
+  describe 'DELETE /articles/:id' do
     context 'with user not signed in' do
       before { delete "/articles/#{@article.id}" }
       
